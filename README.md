@@ -6,8 +6,9 @@
 3. `pip install opencv-python==4.5.5.64 gym==0.23.1`
 
 If shows error: `ImportError: libffi.so.6: cannot open shared object file: No such file or directory`
-4. `find /usr/lib -name "libffi.so*"`
-5. `sudo ln -s /usr/path/to/libffi.so.7 /usr/lib/path/to/libffi.so.6`
+
+1. `find /usr/lib -name "libffi.so*"`
+2. `sudo ln -s /usr/path/to/libffi.so.7 /usr/lib/path/to/libffi.so.6`
 
 ## Compile the c++ LiDAR library
 ``` bash
