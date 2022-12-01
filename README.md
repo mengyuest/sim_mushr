@@ -21,5 +21,6 @@ WITH_CUDA=ON pip install -e .
 1. `python demo.py`
 
 ## To use RL-demo
-1. Install rl package: `cd rl && pip install -e . && cd -`
-2. Run RL demo: `python demo_rl.py`
+1. Install torch: `conda install pytorch torchvision torchaudio pytorch-cuda=11.6 -c pytorch -c nvidia`
+2. Install rl package: `cd rl && pip install -e . && cd -`
+3. Run RL demo: `python demo_rl.py`
