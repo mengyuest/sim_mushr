@@ -19,3 +19,7 @@ WITH_CUDA=ON pip install -e .
 
 ## (Back to the source code dir) Run the code
 1. `python demo.py`
+
+## To use RL-demo
+1. Install rl package: `cd rl && pip install -e . && cd -`
+2. Run RL demo: `python demo_rl.py`
