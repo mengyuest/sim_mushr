@@ -20,7 +20,11 @@ WITH_CUDA=ON pip install -e .
 ## (Back to the source code dir) Run the code
 1. `python demo.py`
 
-## To use RL-demo
+## To use the pretrained RL controller
 1. Install torch: `conda install pytorch torchvision torchaudio pytorch-cuda=11.6 -c pytorch -c nvidia`
 2. Install rl package: `cd rl && pip install -e . && cd -`
 3. Run RL demo: `python demo_rl.py`
+
+## To train the RL controller
+1. Run: `python rl/global_patch.py --algor sac --exp_name mushr --gpus 0 --env_id mushr --max_iter 100000 --save_iter 100 --random_seed 1007 --num_process 1`
+2. The model checkpoints are saved in `./outputs/gxxxx-xxxxxx_mushr_sac_1007/models/`

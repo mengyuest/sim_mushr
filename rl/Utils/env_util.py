@@ -2,7 +2,7 @@ import gym
 from gym.spaces import Discrete
 
 # TODO 
-from gen_data.sim_mushr.mushr_env import MushrSim
+from mushr_env import MushrSim
 
 __all__ = ['get_env_info', 'get_env_space']
 
@@ -22,7 +22,7 @@ def get_env_space(env_id):
 
 def get_env_info(env_id, unwrap=False, args=None):
     if env_id=="mushr":
-        env = MushrSim(rl=True, reward_type=args.reward_type)
+        env = MushrSim()
     else:
         if args is not None:
             env = gym.make(env_id, args=args)

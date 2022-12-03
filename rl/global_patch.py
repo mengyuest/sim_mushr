@@ -1,13 +1,35 @@
 import argparse
 import sys, os
-# sys.path.append("../../../..")
-# print(os.path.realpath(__file__))
 sys.path.append(os.path.join(os.path.dirname(__file__),".."))
-# import utils.z_utils as utils
 from torch.utils.tensorboard import SummaryWriter
 import pickle
 import argparse
 import time
+from datetime import datetime
+import numpy as np
+
+class Logger(object):
+    def __init__(self):
+        self._terminal = sys.stdout
+        self.is_created=False
+        self.buffer = []
+
+    def create_log(self, log_path):
+        self.log = open(log_path + "/log.txt", "a", 1)
+        self.is_created = True
+        for message in self.buffer:
+            self.log.write(message)
+
+    def write(self, message, only_file=False):
+        if not only_file:
+            self._terminal.write(message)
+        if self.is_created:
+            self.log.write(message)
+        else:
+            self.buffer.append(message)
+
+    def flush(self):
+        pass
 
 
 def add_parser(parser):
@@ -30,13 +52,47 @@ def add_parser(parser):
     return parser
 
 
+def setup_dirs_and_loggers(args):
+    # set up time-related exp name
+    time_str = datetime.now().strftime("%m%d-%H%M%S")
+    exp_str = args.exp_name    
+    args.exp_dir = "%s/g%s_%s"%(args.root_dir, time_str, exp_str)
+    args.exp_dir_full = args.exp_dir
+    args.src_dir = os.path.join(args.exp_dir, "code")
+    args.log_dir = os.path.join(args.exp_dir, "logs")
+    args.viz_dir = os.path.join(args.exp_dir, "viz")
+    args.ckpt_dir = os.path.join(args.exp_dir, "models") 
+    args.model_dir = args.ckpt_dir
+
+    # created related folders
+    for dd in [args.src_dir, args.log_dir, args.viz_dir, args.ckpt_dir]:
+        os.makedirs(dd, exist_ok=True)
+
+    # move source code to the folder
+    for key_dir in ["src", "utils"]:
+        for root, dirs, files in os.walk(key_dir):
+            os.makedirs(os.path.join(args.src_dir, key_dir, "/".join(root.split("/")[1:])), exist_ok=True)
+            for f in files:
+                if f[-3:].lower() == '.py':
+                    shutil.copy(os.path.join(root, f), os.path.join(args.src_dir, key_dir, "/".join(root.split("/")[1:]), f))
+
+    # set up the logger
+    logger = Logger()
+    logger.create_log(args.exp_dir)
+    sys.stdout = logger
+    logger.write("python " + " ".join(sys.argv) + "\n", only_file=True)
+
+    # save args to file
+    np.savez(os.path.join(args.exp_dir, "args.npz"), args=args)
+    return args
+
+
 def setup_dir(parser, rest_args=None):
     if rest_args is not None:
         args = parser.parse_args(rest_args)
     else:
         args = parser.parse_args()
-    # roa_utils.set_seed_and_exp(args)
-    utils.setup_dirs_and_loggers(args)
+    setup_dirs_and_loggers(args)
     log_path = args.exp_dir_full
     model_path = args.model_dir
     args.seed = args.random_seed
